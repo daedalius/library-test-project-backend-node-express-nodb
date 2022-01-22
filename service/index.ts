@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
+import cookieParser from 'cookie-parser'
 
 import { Author, Book, BookCopy, BookDto, Comment, Credentials, User } from '#entities/index'
 
@@ -10,8 +11,8 @@ import * as usersDal from './dal/users'
 import * as commentsDal from './dal/comments'
 import * as bookCopiesDal from './dal/bookCopies'
 
-import mockBootstrap from './mockBootstrap'
 import { tranformDtoToBook, getMentionedAuthorsId } from './helpers'
+import { authMiddleware } from './helpers/sessionMiddleware'
 
 const app = express()
 app.use(express.json())
@@ -21,7 +22,9 @@ app.use(
     credentials: true,
   })
 )
+app.use(cookieParser('pepega'))
 app.use(morgan(':remote-addr - :remote-user [:date] ":method [:status] :url HTTP/:http-version" ":referrer"'))
+app.use(authMiddleware)
 
 app
   .get<{ ids?: string }, Author[]>('/authors', async (req, res) => {
@@ -70,7 +73,12 @@ app
     res.send(await usersDal.getUsers(userIds.map((i) => ({ id: i }))))
   })
   .post<User[], User[]>('/users', async (req, res) => {
-    res.send(await usersDal.addUsers(req.body))
+    try {
+      const newUsers = await usersDal.addUsers(req.body)
+      res.send(newUsers)
+    } catch (e) {
+      res.status(400).send(e.message)
+    }
   })
   .put<User[], User[]>('/users', async (req, res) => {
     res.send(await usersDal.putUsers(req.body))
@@ -112,8 +120,7 @@ app
     try {
       res.send(await bookCopiesDal.borrowCopy(bookId, userId))
     } catch (e) {
-      res.statusCode = 400
-      res.send(e.message)
+      res.status(400).send(e.message)
     }
   })
   .post<{ id: string }, BookCopy>('/copies/return/:id', async (req, res) => {
@@ -123,7 +130,6 @@ app
   .delete<string[], void>('/copies', async (req, res) => {
     res.send(await bookCopiesDal.deleteBookCopies(req.body))
   })
-
 interface BookSearchCriteria {
   id?: string
   substring?: string
@@ -148,7 +154,5 @@ app.get<BookSearchCriteria, Book[]>('/search/books', async (req, res) => {
 })
 
 app.listen(3000, () => {
-  // mockBootstrap()
-
   return console.log(`Server is listening on 3000`)
 })

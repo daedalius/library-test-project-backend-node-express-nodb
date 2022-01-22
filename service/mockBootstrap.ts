@@ -45,7 +45,6 @@ export default async function (port = 3000) {
       ]),
     })
   ).json()
-  console.log('users', users);
 
   const comment = await (
     await fetch(fetchUri + '/comments', {
@@ -58,7 +57,7 @@ export default async function (port = 3000) {
       }),
     })
   ).json()
-  console.log('comment', comment);
+  console.log('comment', comment)
 
   const copies = await (
     await fetch(fetchUri + '/copies', {

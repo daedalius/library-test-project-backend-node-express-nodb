@@ -290,7 +290,7 @@ paths:
   /sign-in:
     post:
       tags:
-        - 'user management'
+        - 'access management'
       description: 'Login to the system'
       requestBody:
         required: true
@@ -308,7 +308,7 @@ paths:
   /sign-up:
     post:
       tags:
-        - 'user management'
+        - 'access management'
       description: 'Create new user in the system'
       requestBody:
         required: true
@@ -325,6 +325,14 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: 'User with the same login is already exists'
+  /sign-out:
+    post:
+      tags:
+        - 'access management'
+      description: 'Logout from the system'
+      responses:
+        '200':
+          description: 'OK'
 
   /search/books:
     get:

@@ -1,0 +1,6 @@
+components:
+  schemas:
+    BookDtos:
+      type: array
+      items:
+        $ref: "./book-dto.yml#/components/schemas/BookDto"

@@ -1,0 +1,6 @@
+components:
+  schemas:
+    Books:
+      type: array
+      items:
+        $ref: "./book.yml#/components/schemas/Book"

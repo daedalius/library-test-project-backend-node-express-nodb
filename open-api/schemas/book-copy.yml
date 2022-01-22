@@ -1,0 +1,19 @@
+components:
+  schemas:
+    BookCopy:
+      type: object
+      description: "Book copy to borrow"
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        bookId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+      required:
+        - id
+        - bookId

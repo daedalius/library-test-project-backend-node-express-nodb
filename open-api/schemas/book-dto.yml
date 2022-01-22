@@ -1,0 +1,27 @@
+components:
+  schemas:
+    BookDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          example: "The Man Who Was Thursday"
+        description:
+          type: string
+          example: "The book has been described as a metaphysical thriller."
+        coverUrl:
+          type: string
+          example: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Chesterton_-_The_Man_Who_Was_Thursday.djvu/page1-377px-Chesterton_-_The_Man_Who_Was_Thursday.djvu.jpg"
+        authorIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - id
+        - title
+        - authorIds

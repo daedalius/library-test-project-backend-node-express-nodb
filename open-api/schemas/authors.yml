@@ -1,0 +1,6 @@
+components:
+  schemas:
+    Authors:
+      type: array
+      items:
+        $ref: "./author.yml#/components/schemas/Author"

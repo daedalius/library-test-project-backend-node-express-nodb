@@ -1,0 +1,23 @@
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        bookId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        text:
+          type: string
+          example: "I'm not big into books"
+      required:
+        - id
+        - bookId
+        - userLogin
+        - text

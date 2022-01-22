@@ -1,0 +1,10 @@
+components:
+  schemas:
+    NonReadonlyUid:
+      type: object
+      properties:
+        id:
+          readOnly: false
+          format: uuid
+      required:
+        - id

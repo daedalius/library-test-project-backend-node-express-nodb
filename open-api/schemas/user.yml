@@ -1,0 +1,19 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        login:
+          type: string
+          example: "JohnDoe"
+        avatarUrl:
+          type: string
+          example: "https://www.amongusavatarcreator.com/assets/img/user_images/avatars/Bc2HnQbRNLBJqTeXYpv11ZTE.png"
+      required:
+        - id
+        - login
+

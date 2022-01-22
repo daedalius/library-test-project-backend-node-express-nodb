@@ -1,0 +1,15 @@
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+          format: uuid
+        name:
+          type: string
+          example: "G. K. Chesterton"
+      required:
+        - id
+        - name

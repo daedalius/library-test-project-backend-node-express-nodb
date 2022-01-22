@@ -1,0 +1,6 @@
+components:
+  schemas:
+    BookCopies:
+      type: array
+      items:
+        $ref: "./book-copy.yml#/components/schemas/BookCopy"

@@ -1,0 +1,553 @@
+openapi: '3.0.2'
+info:
+  title: Library API
+  version: '1.0'
+servers:
+  - url: http://127.0.0.1:3000
+paths:
+  /authors:
+    get:
+      tags:
+        - 'authors'
+      description: 'Get all available authors'
+      parameters:
+      - in: query
+        name: ids
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authors'
+    post:
+      tags:
+        - 'authors'
+      description: 'Create bunch of new authors'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authors'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authors'
+    put:
+      tags:
+        - 'authors'
+      description: 'Update bunch of authors'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Author'
+                  - $ref: '#/components/schemas/NonReadonlyUid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authors'
+    delete:
+      tags:
+        - 'authors'
+      description: 'Remove bunch of authors. Dosn`t remove books'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOfUuids'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authors'
+        '400':
+          description: 'Some authors are mentioned as authors of existing books'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authors'
+
+  /books:
+    get:
+      tags:
+        - 'books'
+      description: 'Get all books available'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+    post:
+      description: 'Add bunch of new books'
+      tags:
+        - 'books'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDtos'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+    put:
+      tags:
+        - 'books'
+      description: 'Update bunch of books'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDtos'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+    delete:
+      tags:
+        - 'books'
+      description: 'Remove bunch of known books'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOfUuids'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'Some books have borrowed book copies'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+
+  /comments:
+    get:
+      tags:
+        - 'comments'
+      description: 'Get all comments for a single book'
+      parameters:
+        - in: query
+          name: bookId
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comments'
+    post:
+      tags:
+        - 'comments'
+      description: 'Add a comment to a book'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    put:
+      tags:
+        - 'comments'
+      description: 'Update a comment'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Comment'
+                - $ref: '#/components/schemas/NonReadonlyUid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comments'
+    delete:
+      tags:
+        - 'comments'
+      description: 'Remove bunch of comments'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOfUuids'
+      responses:
+        '200':
+          description: OK
+
+  /users:
+    get:
+      tags:
+        - 'users'
+      description: 'Get basic user info for bunch of users by user-id'
+      parameters:
+        - in: query
+          name: ids
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+    post:
+      tags:
+        - 'users'
+      description: 'Creates bunch of users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+    put:
+      tags:
+        - 'users'
+      description: 'Update bunch of users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+                  - $ref: '#/components/schemas/NonReadonlyUid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+
+  /sign-in:
+    post:
+      tags:
+        - 'user management'
+      description: 'Login to the system'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /sign-up:
+    post:
+      tags:
+        - 'user management'
+      description: 'Create new user in the system'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 'User with the same login is already exists'
+
+  /search/books:
+    get:
+      tags:
+        - 'actions'
+      description: 'Search by book title, author and/or availability status'
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: substring
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: authorIds
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+        - in: query
+          name: available
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+
+  /copies:
+    post:
+      tags:
+        - 'copies'
+      description: 'Add book copies'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCopies'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopies'
+    delete:
+      tags:
+        - 'copies'
+      description: 'Remove bunch of book copies from the library'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOfUuids'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopies'
+  /copies/book/{bookId}:
+    get:
+      tags:
+        - 'copies'
+      description: 'Returns a list of book copies'
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopies'
+  /copies/book/free:
+    get:
+      tags:
+        - 'copies'
+      description: 'Returns a list of free book copies'
+      parameters:
+        - in: query
+          name: bookIds
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopies'
+  /copies/user/{userId}:
+    get:
+      tags:
+        - 'copies'
+      description: 'Returns a list of book copies borrowed by user'
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopies'
+  /copies/borrow/{bookId}/user/{userId}:
+    post:
+      tags:
+        - 'copies'
+      description: 'Borrow a book copy by user, returns a BookCopy instance'
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopy'
+        '400':
+          description: No free copies available || User already own a copy
+  /copies/return/{copyId}:
+    post:
+      tags:
+        - 'copies'
+      description: 'Return a book copy to the library'
+      parameters:
+        - in: path
+          name: copyId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCopy'
+
+components:
+  schemas:
+    ListOfUuids:
+      type: array
+      items:
+        type: string
+        format: uuid
+    NonReadonlyUid:
+      $ref: './schemas/non-readonly-uid.yml#/components/schemas/NonReadonlyUid'
+    NonReadonlyUids:
+      type: array
+      items:
+        $ref: './schemas/non-readonly-uid.yml#/components/schemas/NonReadonlyUid'
+
+    Author:
+      $ref: './schemas/author.yml#/components/schemas/Author'
+    Authors:
+      $ref: './schemas/authors.yml#/components/schemas/Authors'
+
+    Book:
+      $ref: './schemas/book.yml#/components/schemas/Book'
+    Books:
+      $ref: './schemas/books.yml#/components/schemas/Books'
+    BookDto:
+      $ref: './schemas/book-dto.yml#/components/schemas/BookDto'
+    BookDtos:
+      $ref: './schemas/book-dtos.yml#/components/schemas/BookDtos'
+
+    Comment:
+      $ref: 'schemas/comment.yml#/components/schemas/Comment'
+    Comments:
+      $ref: 'schemas/comments.yml#/components/schemas/Comments'
+
+    User:
+      $ref: './schemas/user.yml#/components/schemas/User'
+    Users:
+      $ref: './schemas/users.yml#/components/schemas/Users'
+
+    BookCopy:
+      $ref: './schemas/book-copy.yml#/components/schemas/BookCopy'
+    BookCopies:
+      $ref: './schemas/book-copies.yml#/components/schemas/BookCopies'
+
+    Credentials:
+      $ref: './schemas/credentials.yml#/components/schemas/Credentials'

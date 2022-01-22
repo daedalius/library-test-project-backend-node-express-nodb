@@ -1,0 +1,6 @@
+components:
+  schemas:
+    Comments:
+      type: array
+      items:
+        $ref: "./comment.yml#/components/schemas/Comment"

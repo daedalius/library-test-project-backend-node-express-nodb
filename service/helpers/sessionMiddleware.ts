@@ -18,7 +18,7 @@ export async function authMiddleware(req: express.Request, res: express.Response
 
             res.setHeader('Access-Control-Allow-Credentials', 'true')
             res.cookie('session-id', sessionId, { maxAge: durationMs, path: '/' })
-            res.status(200).send()
+            res.status(200).send(user)
             return
           } else {
             res.status(400)
@@ -37,11 +37,11 @@ export async function authMiddleware(req: express.Request, res: express.Response
     case '/sign-up': {
       if (req.method === 'POST') {
         try {
-          const { login, password } = req.body
+          const { login, password, avatarUrl } = req.body
           const createdUser = (
             await usersDal.addUsers([
               // @ts-ignore
-              { login: login },
+              { login: login, avatarUrl: avatarUrl },
             ])
           )[0] as User
 
@@ -49,7 +49,7 @@ export async function authMiddleware(req: express.Request, res: express.Response
           const { id: sessionId, durationMs } = await sessionsDal.createSession(createdUser.id)
 
           res.cookie('session-id', sessionId, { maxAge: durationMs, path: '/' })
-          res.status(200).send()
+          res.status(200).send(createdUser)
           return
         } catch (e) {
           // res.status(400).send(e.message)
@@ -65,12 +65,25 @@ export async function authMiddleware(req: express.Request, res: express.Response
       res.send()
       return
     }
+    case '/current-user': {
+      try {
+        const userId = await sessionsDal.getUserIdFromSession(req.cookies['session-id'])
+        const user = await usersDal.getUsers([{ id: userId }])
+        res.status(200).send(user[0])
+        return
+      } catch (e) {
+        console.warn(e)
+        res.status(404).send()
+        return
+      }
+    }
   }
 
   const sessionId = req.cookies['session-id']
-  const isActive = await sessionsDal.checkIfSessionIsActiveAndProlong(sessionId)
+  const { isActive, prolongationPeriodMs } = await sessionsDal.checkIfSessionIsActiveAndProlong(sessionId)
   if (isActive) {
     res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.cookie('session-id', sessionId, { maxAge: prolongationPeriodMs, path: '/' })
     next()
     return
   } else {

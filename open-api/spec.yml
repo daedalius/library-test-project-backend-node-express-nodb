@@ -9,16 +9,21 @@ paths:
     get:
       tags:
         - 'authors'
-      description: 'Get all available authors'
+      description: 'Get all available authors or search by author ids or substring'
       parameters:
-      - in: query
-        name: ids
-        required: false
-        style: form
-        explode: false
-        schema:
-          type: array
-          items:
+        - in: query
+          name: ids
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: substring
+          required: false
+          schema:
             type: string
       responses:
         '200':
@@ -93,7 +98,39 @@ paths:
     get:
       tags:
         - 'books'
-      description: 'Get all books available'
+      description: 'Get last registered books or search by book title, author and/or availability status'
+      parameters:
+        - in: query
+          name: latest
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: ids
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: substring
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: authorIds
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+        - in: query
+          name: available
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -127,7 +164,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookDtos'
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Book'
+                  - $ref: '#/components/schemas/NonReadonlyUid'
       responses:
         '200':
           description: OK
@@ -333,46 +374,6 @@ paths:
       responses:
         '200':
           description: 'OK'
-
-  /search/books:
-    get:
-      tags:
-        - 'actions'
-      description: 'Search by book title, author and/or availability status'
-      parameters:
-        - in: query
-          name: id
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - in: query
-          name: substring
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: authorIds
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              format: uuid
-        - in: query
-          name: available
-          required: false
-          schema:
-            type: boolean
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Books'
 
   /copies:
     post:

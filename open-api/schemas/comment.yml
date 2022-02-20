@@ -19,5 +19,5 @@ components:
       required:
         - id
         - bookId
-        - userLogin
+        - userId
         - text

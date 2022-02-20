@@ -11,14 +11,24 @@ interface UserSession {
 }
 const storedSessions: UserSession[] = []
 
-export async function checkIfSessionIsActiveAndProlong(sessionId): Promise<boolean> {
+export async function checkIfSessionIsActiveAndProlong(
+  sessionId
+): Promise<{ isActive: boolean; prolongationPeriodMs?: number }> {
   const session = storedSessions.find((s) => s.id === sessionId)
-  if (!session) return false
+  if (!session)
+    return {
+      isActive: false,
+    }
 
   const currentDate = new Date()
   session.lastVisited = currentDate
   const diff = currentDate.getMilliseconds() - session.lastVisited.getMilliseconds()
-  return diff < sessionDurationMs
+  const isActive = diff < sessionDurationMs
+
+  return {
+    isActive: isActive,
+    prolongationPeriodMs: sessionDurationMs,
+  }
 }
 
 export async function prolongSession(sessionId: string) {

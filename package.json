@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:api": "nodemon"
+    "start:api": "nodemon",
+    "do:mocks": "node ./mocks.js"
   },
   "author": "",
   "license": "ISC",

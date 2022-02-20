@@ -21,6 +21,11 @@ export async function addBookCopies(bookCopies: BookCopy[]) {
 }
 
 export async function deleteBookCopies(ids: string[]) {
+  let ifSomeBookCopiesAreBorrowed = bookCopiesData.some((bc) => ids.includes(bc.id) && !!bc.userId)
+  if (ifSomeBookCopiesAreBorrowed) {
+    throw new Error('Some book copies are borrowed')
+  }
+
   bookCopiesData = bookCopiesData.filter((bookCopy) => !ids.includes(bookCopy.id))
   return
 }
@@ -44,15 +49,15 @@ export async function borrowCopy(bookId: string, userId: string) {
     throw new BadRequestError('User already own a copy')
   }
 
-  firstFreeBookCopyIndex[firstFreeBookCopyIndex] = {
-    ...firstFreeBookCopyIndex[firstFreeBookCopyIndex],
+  bookCopiesData[firstFreeBookCopyIndex] = {
+    ...bookCopiesData[firstFreeBookCopyIndex],
     userId: userId,
   }
 
-  return firstFreeBookCopyIndex[firstFreeBookCopyIndex]
+  return bookCopiesData[firstFreeBookCopyIndex]
 }
 
-export async function returnCopy(id: string){
+export async function returnCopy(id: string) {
   const copyToReturnIndex = bookCopiesData.findIndex((c) => c.id === id)
 
   bookCopiesData[copyToReturnIndex] = {

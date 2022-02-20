@@ -4,12 +4,21 @@ import { Author } from '#entities/Author'
 
 let authorsData: Author[] = []
 
-export async function getAuthors(ids?: string[]) {
-  if (Array.isArray(ids) && ids.length !== 0) {
-    return authorsData.filter((a) => ids.includes(a.id))
+export async function getAuthors(ids?: string[], substring?: string) {
+  let result = authorsData
+
+  if (ids || substring) {
+    if (Array.isArray(ids) && ids.length !== 0) {
+      result = authorsData.filter((a) => ids.includes(a.id))
+    }
+
+    if (substring) {
+      const substringToMatch = substring.toUpperCase()
+      result = result.filter((a) => a.name.toUpperCase().includes(substringToMatch))
+    }
   }
 
-  return authorsData
+  return result
 }
 
 export async function addAuthors(authorsToAdd: Author[]) {

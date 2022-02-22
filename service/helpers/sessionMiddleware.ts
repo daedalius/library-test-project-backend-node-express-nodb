@@ -5,6 +5,8 @@ import * as sessionsDal from '../dal/sessions'
 import * as usersDal from '../dal/users'
 import * as credentialsDal from '../dal/credentials'
 
+import publicRoutes from 'service/public-routes'
+
 export async function authMiddleware(req: express.Request, res: express.Response, next: Function) {
   switch (req.url) {
     case '/sign-in': {
@@ -37,11 +39,11 @@ export async function authMiddleware(req: express.Request, res: express.Response
     case '/sign-up': {
       if (req.method === 'POST') {
         try {
-          const { login, password, avatarUrl } = req.body
+          const { login, password, avatarUrl, role } = req.body
           const createdUser = (
             await usersDal.addUsers([
               // @ts-ignore
-              { login: login, avatarUrl: avatarUrl },
+              { login: login, avatarUrl: avatarUrl, role },
             ])
           )[0] as User
 
@@ -82,6 +84,20 @@ export async function authMiddleware(req: express.Request, res: express.Response
   const sessionId = req.cookies['session-id']
   const { isActive, prolongationPeriodMs } = await sessionsDal.checkIfSessionIsActiveAndProlong(sessionId)
   if (isActive) {
+    const isPublicRoute = Object.keys(publicRoutes).some(
+      (r) => req.url.startsWith(r) && publicRoutes?.[r]?.includes(req.method)
+    )
+
+    if (!isPublicRoute) {
+      const userId = await sessionsDal.getUserIdFromSession(req.cookies['session-id'])
+      const user = await usersDal.getUsers([{ id: userId }])
+
+      if (user[0].role !== 'librarian') {
+        res.status(401).send()
+        return
+      }
+    }
+
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.cookie('session-id', sessionId, { maxAge: prolongationPeriodMs, path: '/' })
     next()

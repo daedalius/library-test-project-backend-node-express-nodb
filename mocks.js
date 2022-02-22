@@ -10,7 +10,8 @@ const fetchUri = `http://127.0.0.1:${3000}`
     body: JSON.stringify({
       login: 'admin',
       password: 'password',
-      avatarUrl: 'https://img.wattpad.com/useravatar/DannaMendoza372.128.250070.jpg'
+      avatarUrl: 'https://img.wattpad.com/useravatar/DannaMendoza372.128.250070.jpg',
+      role: 'librarian'
     }),
   })
   const cookie = response.headers.get('Set-Cookie').split(';')[0].split('=')[1]

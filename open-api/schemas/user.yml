@@ -9,11 +9,13 @@ components:
           readOnly: true
         login:
           type: string
-          example: "JohnDoe"
+          example: 'JohnDoe'
+        role:
+          type: string
+          enum: [librarian]
         avatarUrl:
           type: string
-          example: "https://www.amongusavatarcreator.com/assets/img/user_images/avatars/Bc2HnQbRNLBJqTeXYpv11ZTE.png"
+          example: 'https://www.amongusavatarcreator.com/assets/img/user_images/avatars/Bc2HnQbRNLBJqTeXYpv11ZTE.png'
       required:
         - id
         - login
-

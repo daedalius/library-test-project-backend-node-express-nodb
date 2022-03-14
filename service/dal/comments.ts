@@ -29,3 +29,9 @@ export async function deleteComments(ids: string[]) {
   commentsData = commentsData.filter((comment) => !ids.includes(comment.id))
   return
 }
+
+export async function reset() {
+  commentsData = []
+  return
+}
+

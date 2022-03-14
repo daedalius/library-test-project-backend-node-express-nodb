@@ -49,3 +49,8 @@ export async function putUsers(usersToPut: User[]) {
 export async function getUserByLogin(login: string) {
   return usersData.find((u) => u.login === login)
 }
+
+export async function reset() {
+  usersData = []
+  return
+}

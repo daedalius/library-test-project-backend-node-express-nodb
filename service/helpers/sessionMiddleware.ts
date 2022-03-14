@@ -79,6 +79,10 @@ export async function authMiddleware(req: express.Request, res: express.Response
         return
       }
     }
+    case '/reset': {
+      next()
+      return
+    }
   }
 
   const sessionId = req.cookies['session-id']

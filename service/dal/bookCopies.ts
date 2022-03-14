@@ -67,3 +67,8 @@ export async function returnCopy(id: string) {
 
   return bookCopiesData[copyToReturnIndex]
 }
+
+export async function reset() {
+  bookCopiesData = []
+  return
+}

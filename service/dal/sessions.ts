@@ -9,7 +9,7 @@ interface UserSession {
   userId: string
   lastVisited: Date
 }
-const storedSessions: UserSession[] = []
+let storedSessions: UserSession[] = []
 
 export async function checkIfSessionIsActiveAndProlong(
   sessionId
@@ -69,4 +69,9 @@ export async function dropSession(sessionId: string) {
   if (sessionToDropIndex >= 0) {
     storedSessions.splice(sessionToDropIndex, 1)
   }
+}
+
+export async function reset() {
+  storedSessions = []
+  return
 }

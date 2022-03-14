@@ -515,6 +515,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/BookCopy'
 
+  /reset:
+    post:
+      tags:
+        - "test"
+      description: 'Clear all DB data for non-production environment'
+      responses:
+        '200':
+          description: 'OK'
+
 components:
   schemas:
     ListOfUuids:

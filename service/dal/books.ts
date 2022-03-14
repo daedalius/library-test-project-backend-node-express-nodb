@@ -54,3 +54,9 @@ export async function deleteBooks(ids: string[]) {
   booksData = booksData.filter((book) => !ids.includes(book.id))
   return
 }
+
+export async function reset() {
+  booksData = []
+  return
+}
+

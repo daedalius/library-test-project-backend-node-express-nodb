@@ -40,3 +40,8 @@ export async function deleteAuthors(ids: string[]) {
   authorsData = authorsData.filter((i) => !ids.includes(i.id))
   return
 }
+
+export async function reset() {
+  authorsData = []
+  return
+}

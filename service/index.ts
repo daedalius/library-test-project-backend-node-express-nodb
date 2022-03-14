@@ -1,3 +1,4 @@
+import { env } from 'process'
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -183,6 +184,20 @@ app
       res.status(400).send(e.message)
     }
   })
+
+if (env['NODE_ENV'].toLowerCase() !== 'production') {
+  app.post('/reset', async (req, res) => {
+    await Promise.all([
+      authorsDal.reset(),
+      bookCopiesDal.reset(),
+      booksDal.reset(),
+      commentsDal.reset(),
+      sessionsDal.reset(),
+      usersDal.reset(),
+    ])
+    res.status(200).send('OK')
+  })
+}
 
 app.listen(3000, () => {
   return console.log(`Server is listening on 3000`)

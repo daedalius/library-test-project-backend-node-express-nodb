@@ -27,3 +27,10 @@ export function verifyUserCredentials(userId: string, plainPassword: string): bo
   const encryptedPassword = CryptoJS.SHA3(plainPassword + saltFunction(userId)).toString()
   return credentialsData[userId] === encryptedPassword
 }
+
+export async function reset() {
+  Object.keys(credentialsData).forEach((key) => {
+    delete credentialsData[key]
+  })
+  return
+}
